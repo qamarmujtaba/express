@@ -20,7 +20,7 @@ jobs:
         username: ubuntu
         key: ${{ secrets.EC2_PRIVATE_KEY }}
         script: |
-          cd express-pm2-demo
+          cd express
           git pull origin main
           npm install
-          pm2 restart express-app
+          pm2 restart express

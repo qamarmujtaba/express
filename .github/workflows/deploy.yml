@@ -1,9 +1,9 @@
-name: Deploy to EC2
+name: Deploy to AWS EC2
 
 on:
   push:
     branches:
-      - main
+      - main  # Trigger on push to main branch
 
 jobs:
   deploy:
@@ -11,16 +11,20 @@ jobs:
 
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
+
+    - name: Set up SSH Key
+      run: |
+        echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
+        chmod 600 private_key.pem
 
     - name: Deploy to EC2
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ubuntu
-        key: ${{ secrets.EC2_PRIVATE_KEY }}
-        script: |
-          cd express
-          git pull origin main
-          npm install
-          pm2 restart express-app
+      run: |
+        ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          cd ~/app || mkdir ~/app && cd ~/app
+          git pull origin main || git clone https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO.git .
+          docker stop my-express-app || true
+          docker rm my-express-app || true
+          docker build -t my-express-app .
+          docker run -d -p 80:3000 --name my-express-app my-express-app
+        EOF

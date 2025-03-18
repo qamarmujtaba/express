@@ -22,7 +22,7 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
           cd ~/app || mkdir ~/app && cd ~/app
-          git pull origin main || git clone https://github.com/qamarmujtaba/express.git .
+          git pull origin main || git clone https://github.com/qamarmujtaba/express.git
           docker stop my-express-app || true
           docker rm my-express-app || true
           docker build -t my-express-app .

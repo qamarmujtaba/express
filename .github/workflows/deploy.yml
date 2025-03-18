@@ -24,7 +24,7 @@ jobs:
         mkdir -p ~/app && cd ~/app
         EOF
           cd ~/app || mkdir ~/app && cd ~/app
-          git pull origin main || git clone https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO.git .
+          git pull origin main || git clone https://github.com/qamarmujtaba/express.git .
           docker stop my-express-app || true
           docker rm my-express-app || true
           docker build -t my-express-app .
